@@ -1,0 +1,24 @@
+Your two week project is going to be building that micro-service that handles notifications. And depending on how that two week project goes, Michael will give you further details on the rest of the process.
+
+Details on the 2 week project:
+- Needs to expose an API that allows the creation of an object that holds:
+Subject
+Text
+Url
+User
+Classroom
+Acknowledged (Boolean)
+
+- API needs to be be able to create, read, update, and delete these objects
+
+- Needs to hook to a MongoDB database
+
+- Needs to be deployable in docker
+
+- Can be written in Java or NodeJS
+
+- Must be unit tested
+
+- Must have sufficient code comments / documentation for future developments
+
+Let’s set the deadline to 2//2020.
