@@ -12,14 +12,14 @@ const connect = (cb) => {
   if(state.db) //if there is a connection
     cb(); //callback
   else{
-    MongoClient.connect(url, mongoOptions, {useUnifiedTopology: true}, (err,client) => {
+    MongoClient.connect(url, mongoOptions, {useUnifiedTopology: true, useNewUrlParser: true}, (err,client) => {
       if(err)
         cb(err);
       else{
         state.db = client.db(dbname);
         cb();
       }
-    });
+    })
   }
 }
 

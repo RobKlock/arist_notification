@@ -13,37 +13,41 @@ app.get('/', (req,res) => {
 
 app.get('/getNotifications', (req,res) =>{
   db.getDB().collection(collection).find({}).toArray((err,documents) =>{
-    if(err)
+    if(err) //Update to send a proper error message
       console.log(err);
     else{
       console.log(documents);
       res.json(documents);
-
     }
   })
 });
-
+//Serverside Update
 app.put('/:id', (req,res) =>{
   const notificationID = req.params.id;
   const userInput = req.body;
-
-  db.getDB().collection(collection).findOneAndUpdate({_id: notificationID}, {$set : {notification : userInput.notification}}, {returnOriginal: false}, (err,result) =>{
+  console.log("you did a command")
+  db.getDB().collection(collection).findOneAndUpdate({_id: db.getPrimaryKey(notificationID)}, {$set : {notification : userInput.notification}}, {returnOriginal: false}, (err,result) =>{
     if(err)
-      console.log(err);
+      console.log(err); //send a user-friendly err
+
     else
       res.json(result);
+      console.log(req);
+      console.log(res);
 
   });
 });
 
+
 db.connect((err) =>{
   if (err){
     console.log('unable to connect to database');
-    process.exit(1)
+    process.exit(1);
   }
   else {
     app.listen(3000, () =>{
       console.log('connected to database, app listening on port 3000')
+      console.log("hi rob!")
     });
   }
 })
