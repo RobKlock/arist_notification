@@ -7,25 +7,28 @@ const path = require ('path');
 const db = require("./db");
 const collection = "notifications";
 
+//serves static html
+//fix
 app.get('/', (req,res) => {
-  res.sendFile(path.join(_dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+//gives all the notifications
 app.get('/getNotifications', (req,res) =>{
   db.getDB().collection(collection).find({}).toArray((err,documents) =>{
     if(err) //Update to send a proper error message
       console.log(err);
     else{
-      console.log(documents);
       res.json(documents);
     }
   })
 });
 //Serverside Update
+
 app.put('/:id', (req,res) =>{
   const notificationID = req.params.id;
   const userInput = req.body;
-  console.log("you did a command")
+  //console.log("you did a command")
   db.getDB().collection(collection).findOneAndUpdate({_id: db.getPrimaryKey(notificationID)}, {$set : {notification : userInput.notification}}, {returnOriginal: false}, (err,result) =>{
     if(err)
       console.log(err); //send a user-friendly err
@@ -34,6 +37,29 @@ app.put('/:id', (req,res) =>{
       res.json(result);
       console.log(req);
       console.log(res);
+
+  });
+});
+
+app.post('/', (req,res) => {
+  //get user input
+  const userInput = req.body; //client-side: user gives json
+  db.getDB().collection(collection).insertOne(userInput, (err,result) => {
+    if (err) //log console on errors
+      console.log(err); //fix to make more human-friendly
+    else
+      res.json({result: result, document : result.ops[0]});
+    });
+});
+//use the primary key of the notification to delete
+app.delete('/:id', (req,res) => {
+  const notificationID = req.params.id;
+
+  db.getDB().collection(collection).findOneAndDelete({_id: db.getPrimaryKey(notificationID)}, (err,result) => {
+    if(err)
+      console.log(err);
+    else
+      res.json(result);
 
   });
 });
