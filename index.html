@@ -62,36 +62,84 @@
 
         getNotifications();
 
+        const resetNotificationsInput = () =>{
+          notificationUserInput.val('');
+        }
+
+        const deleteNotification = (notification, listItemID, deleteID) => {
+          let deleteBtn = $(`#${deleteID}`);
+          deleteBtn.click(() => {
+            fetch('/${notification._id}', {
+              method: "delete"
+            }).then((response) => {
+              return response.json();
+            }).then((data) =>{
+              if(data.ok == 1){ //succesfully deleted
+                $(`#${listItemID}`).remove();
+              }
+            });
+          });
+        }
+
         const buildIDS = (notification) =>{
           return{
             editID : "edit_" + notification._id,
             deleteID : "delete_" + notification._id,
-            listItemID : "listItem_" + notification.id,
+            listItemID : "listItem_" + notification._id,
             notificationID : "notification" + notification._id,
           }
         }
 
         const buildTemplate = (notification, ids) => {
+          //Builds an html template to return to displayNotifications
           return  `<li class="list-group-item" id="${ids.listItemID}">
                             <div class="row">
-                                <div class="col-md-4" id="${ids.todoID}">${notification.notification}</div>
+                                <div class="col-md-4" id="${ids.notificationID}">${notification.notification}</div>
                                 <div class="col-md-4"></div>
                                 <div class="col-md-4 text-right">
-                                    <button type="button" class="btn btn-secondary" id="${ids.editID}">Edit</button>
-                                    <button type="button" class="btn btn-danger" id="${ids.deleteID}">Delete</button>
+                                    <button type="button" class="btn btn-secondary" id="${ids.editID}"> Edit </button>
+                                    <button type="button" class="btn btn-danger" id="${ids.deleteID}"> Delete </button>
                                 </div>
                             </div>
                        </li>`;
           }
 
           const displayNotifications = (data) => {
+            //Takes the array of notifications
             data.forEach((notification) => {
+              //Build IDs for each notification
               let ids = buildIDS(notification);
+              //Call BuildTemplate, which builds an unordered list for our li element
               display.append(buildTemplate(notification, ids));
-              editNotification(notification, ids.notificationID, ids.editID);
+              //editNotification(notification, ids.notificationID, ids.editID);
               deleteNotification(notification, ids.listItemID, ids.deleteID);
             });
           }
+
+          form.submit((e) => {
+            e.preventDefault();
+            fetch('/', {
+                method: 'post',
+                body : JSON.stringify({notification : notificationUserInput.val()}),
+                //headers tell the server what kind of content youre sending back
+                headers : {
+                  "Content-Type" : "application/json; charset=utf-8"
+                }
+            }).then((response) => {
+              return response.json(); //A promise that parses the data
+            }).then((data)=>{
+                        if(data.result.ok == 1 && data.result.n == 1){
+                            let ids = buildIDS(data.document);
+                            display.append(buildTemplate(data.document,ids));
+                          //  editNotification(data.document,ids.todoID,ids.editID);
+                            deleteNotification(data.document,ids.listItemID,ids.deleteID);
+
+                    }
+
+            resetNotificationsInput();
+
+            });
+          });
       });
       </script>
   </body>
