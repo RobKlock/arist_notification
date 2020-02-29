@@ -7,8 +7,11 @@ const path = require ('path');
 const db = require("./db");
 const collection = "notifications";
 
-//serves static html
+
 //fix
+
+
+//Read
 app.get('/', (req,res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -25,6 +28,7 @@ app.get('/getNotifications', (req,res) =>{
 });
 //Serverside Update
 
+//Update
 app.put('/:id', (req,res) =>{
   const notificationID = req.params.id;
   const userInput = req.body;
@@ -41,6 +45,7 @@ app.put('/:id', (req,res) =>{
   });
 });
 
+//Create
 app.post('/', (req,res) => {
   //get user input
   const userInput = req.body; //client-side: user gives json
@@ -51,6 +56,8 @@ app.post('/', (req,res) => {
       res.json({result: result, document : result.ops[0]});
     });
 });
+
+//Delete
 //use the primary key of the notification to delete
 app.delete('/:id', (req,res) => {
   const notificationID = req.params.id;
