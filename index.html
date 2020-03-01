@@ -36,6 +36,19 @@
         </ul>
       <div class = "col-lg-2"></div>
     </div>
+    <br>
+    <div class = "row">
+      <div class = "col-lg-2"></div>
+      <div class = "col-lg-8"></div>
+        <div class="alert" role="alert", id = "message">
+
+          </div>
+      <div class = "col-lg-2"></div>
+    </div>
+  </br>
+
+  </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -46,6 +59,24 @@
         const display = $("#display");
         const form = $("#form");
         const notificationUserInput = $("#notification");
+        const message = $("#message");
+        message.hide();
+
+        const displayMessage = (flag, msg) => {
+          //successful post
+          if (flag){
+            message.removeClass('alert-danger');
+            message.addClass('alert-success');
+            message.html(msg);
+            message.show();
+          }
+          else{
+            message.removeClass('alert-success');
+            message.addClass('alert-danger');
+            message.html(msg);
+            message.show();
+          }
+        }
         //reset user input fields
         const resetNotifications = () => {
           notificationUserInput.val('');
@@ -66,20 +97,63 @@
           notificationUserInput.val('');
         }
 
-        const deleteNotification = (notification, listItemID, deleteID) => {
-          let deleteBtn = $(`#${deleteID}`);
-          deleteBtn.click(() => {
-            fetch('/${notification._id}', {
-              method: "delete"
-            }).then((response) => {
-              return response.json();
-            }).then((data) =>{
-              if(data.ok == 1){ //succesfully deleted
-                $(`#${listItemID}`).remove();
-              }
-            });
-          });
-        }
+        // const editNotification = (notification, notificationID, editID) => {
+        //   let editBtn = $(`${editID}`);
+        //   editBtn.click(() => {
+        //     fetch(`/${notification._id}`, {
+        //       method : "put",
+        //       headers : {
+        //         "Content-Type" : "application/json; charset=utf8"
+        //       },
+        //       body : JSON.stringify({notification : notificationUserInput.val()})
+        //     }).then((response) => {
+        //       return response.json();
+        //     }).then((data) => {
+        //       if(data.ok == 1){
+        //         let notificationIndex = $(`#{notificationID}`);
+        //         notificationIndex.html(data.value.notification);
+        //         resetNotificationsInput();
+        //       }
+        //     });
+        //   });
+        // }
+
+        const editNotification = (notification,notificationID,editID)=>{
+                let editBtn = $(`#${editID}`);
+                editBtn.click(()=>{
+                    fetch(`/${notification._id}`,{
+                        method : "put",
+                        headers : {
+                            "Content-Type" : "application/json; charset=utf-8"
+                        },
+                        body : JSON.stringify({todo : notificationUserInput.val()})
+                    }).then((response)=>{
+                        return response.json();
+                    }).then((data)=>{
+                        if(data.ok == 1){
+                            let notificationIndex = $(`#${notificationID}`);
+                            notificationIndex.html(data.value.notification);
+                            resetNotificationsInput();
+                        }
+                    });
+                });
+            }
+
+
+        const deleteNotification = (notification,listItemID,deleteID)=>{
+                let deleteBtn = $(`#${deleteID}`);
+                deleteBtn.click(()=>{
+                    fetch(`/${notification._id}`,{
+                        method: "delete"
+                    }).then((response)=>{
+                        return response.json();
+                    }).then((data)=>{
+                        if(data.ok == 1){
+                            $(`#${listItemID}`).remove();
+                        }
+                    });
+                });
+            }
 
         const buildIDS = (notification) =>{
           return{
@@ -92,9 +166,11 @@
 
         const buildTemplate = (notification, ids) => {
           //Builds an html template to return to displayNotifications
+            //This is where the bug is
           return  `<li class="list-group-item" id="${ids.listItemID}">
                             <div class="row">
-                                <div class="col-md-4" id="${ids.notificationID}">${notification.notification}</div>
+
+                                <div class="col-md-4" id="${ids.notificationID}"> ${notification.Subject}</div>
                                 <div class="col-md-4"></div>
                                 <div class="col-md-4 text-right">
                                     <button type="button" class="btn btn-secondary" id="${ids.editID}"> Edit </button>
@@ -111,7 +187,7 @@
               let ids = buildIDS(notification);
               //Call BuildTemplate, which builds an unordered list for our li element
               display.append(buildTemplate(notification, ids));
-              //editNotification(notification, ids.notificationID, ids.editID);
+              editNotification(notification, ids.notificationID, ids.editID);
               deleteNotification(notification, ids.listItemID, ids.deleteID);
             });
           }
@@ -120,7 +196,7 @@
             e.preventDefault();
             fetch('/', {
                 method: 'post',
-                body : JSON.stringify({notification : notificationUserInput.val()}),
+                body : JSON.stringify({ notification : notificationUserInput.val()}),
                 //headers tell the server what kind of content youre sending back
                 headers : {
                   "Content-Type" : "application/json; charset=utf-8"
@@ -128,18 +204,26 @@
             }).then((response) => {
               return response.json(); //A promise that parses the data
             }).then((data)=>{
-                        if(data.result.ok == 1 && data.result.n == 1){
-                            let ids = buildIDS(data.document);
-                            display.append(buildTemplate(data.document,ids));
-                          //  editNotification(data.document,ids.todoID,ids.editID);
-                            deleteNotification(data.document,ids.listItemID,ids.deleteID);
+                  if(!data.error){
+                      //notification was succesfully inserted
+                    if(data.result.ok == 1 && data.result.n == 1){
+                        let ids = buildIDS(data.document);
+                        display.append(buildTemplate(data.document,ids));
+                        editNotification(data.document,ids.todoID,ids.editID);
+                        deleteNotification(data.document,ids.listItemID,ids.deleteID);
+                        displayMessage(true, data.msg);
 
-                    }
+                      }
+                  }
+                  else {
+                    displayMessage(false, data.error.message);
 
+                  }
             resetNotificationsInput();
 
             });
           });
+
       });
       </script>
   </body>

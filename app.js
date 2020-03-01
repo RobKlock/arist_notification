@@ -1,15 +1,17 @@
+//Rob Klock
+//Arist Microservice to handle notifications
+
+//Import all our libraries
 const express = require('express');
 const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.json());
 const path = require ('path');
-
 const db = require("./db");
 const collection = "notifications";
 
-
-//fix
-
+//Begin API
+//Serverside Updates
 
 //Read
 app.get('/', (req,res) => {
@@ -19,36 +21,69 @@ app.get('/', (req,res) => {
 //gives all the notifications
 app.get('/getNotifications', (req,res) =>{
   db.getDB().collection(collection).find({}).toArray((err,documents) =>{
-    if(err) //Update to send a proper error message
+    if(err)             //Update to send a proper error message
       console.log(err);
     else{
       res.json(documents);
     }
   })
 });
-//Serverside Update
 
 //Update
 app.put('/:id', (req,res) =>{
   const notificationID = req.params.id;
   const userInput = req.body;
-  //console.log("you did a command")
-  db.getDB().collection(collection).findOneAndUpdate({_id: db.getPrimaryKey(notificationID)}, {$set : {notification : userInput.notification}}, {returnOriginal: false}, (err,result) =>{
+  console.log(userInput);
+  //Update Serverside
+  db.getDB().collection(collection).findOneAndUpdate({
+    _id: db.getPrimaryKey(notificationID)}, {
+      $set : {
+        //notification : userInput.notification,
+        Subject : userInput.Subject,
+        Text : userInput.Text,
+        URL : userInput.URL,
+        User : userInput.User,
+        Classroom : userInput.Classroom,
+        Acknowledged : userInput.Acknowledged
+      }}, {returnOriginal: false}, (err,result) =>{
     if(err)
-      console.log(err); //send a user-friendly err
+      //TODO: send a user-friendly err
+      console.log(err);
 
     else
       res.json(result);
-      console.log(req);
-      console.log(res);
 
   });
+
+
+
 });
+
+
+//Old Update
+// app.put('/:id', (req,res) =>{
+//   const notificationID = req.params.id;
+//   const userInput = req.body;
+//   console.log(userInput);
+//
+//   db.getDB().collection(collection).findOneAndUpdate({_id: db.getPrimaryKey(notificationID)}, {$set : {notification : userInput.notification}}, {returnOriginal: false}, (err,result) =>{
+//     if(err)
+//       //TODO: send a user-friendly err
+//       console.log(err);
+//
+//     else
+//       res.json(result);
+//       console.log(req);
+//       console.log(res);
+//
+//   });
+// });
 
 //Create
 app.post('/', (req,res) => {
   //get user input
   const userInput = req.body; //client-side: user gives json
+  console.log(userInput);
   db.getDB().collection(collection).insertOne(userInput, (err,result) => {
     if (err) //log console on errors
       console.log(err); //fix to make more human-friendly

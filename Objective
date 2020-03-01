@@ -9,15 +9,15 @@ User
 Classroom
 Acknowledged (Boolean)
 
-- API needs to be be able to create, read, update, and delete these objects
+- DONE  API needs to be be able to create (Done), read (Done), update (Fix other holds), and delete (Should work?) these objects
 
-- Needs to hook to a MongoDB database
+- Needs to hook to a MongoDB database (Done)
 
 - Needs to be deployable in docker
 
-- Can be written in Java or NodeJS
+- Can be written in Java or NodeJS (done)
 
-- Must be unit tested
+- Must be unit tested (??? Input validation?)
 
 - Must have sufficient code comments / documentation for future developments
 
