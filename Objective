@@ -11,14 +11,16 @@ Acknowledged (Boolean)
 
 - DONE  API needs to be be able to create (Done), read (Done), update (Fix other holds), and delete (Should work?) these objects
 
-- Needs to hook to a MongoDB database (Done)
+- DONE Needs to hook to a MongoDB database (Done)
 
 - Needs to be deployable in docker
 
-- Can be written in Java or NodeJS (done)
+- DONE Can be written in Java or NodeJS (done)
 
 - Must be unit tested (??? Input validation?)
 
 - Must have sufficient code comments / documentation for future developments
 
 Let’s set the deadline to 3/1/2020.
+
+Use: https://www.youtube.com/watch?v=hP77Rua1E0c

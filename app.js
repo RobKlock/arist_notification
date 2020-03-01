@@ -13,21 +13,62 @@ const collection = "notifications";
 //Begin API
 //Serverside Updates
 
-//Read
+//Route API Endpoint
 app.get('/', (req,res) => {
+  //res.send("hi");
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+//Read
 //gives all the notifications
 app.get('/getNotifications', (req,res) =>{
   db.getDB().collection(collection).find({}).toArray((err,documents) =>{
-    if(err)             //Update to send a proper error message
+    if(err) {        //Update to send a proper error message
       console.log(err);
+      res.status(400).send({'error':err});
+    }
+
     else{
       res.json(documents);
     }
   })
 });
+
+//Tried to write an individual get function. Not working
+app.get('/getNotifications/:id', (req,res, next) => {
+  const notificationID = req.params.id;
+  console.log(notificationID);
+  db.getDB().collection(collection).findOne({'_id': notificationID}, (err,result) =>{
+    if(err)
+      res.status(400).send({'error' : err})
+    if (result === undefined) {
+      res.status(400).send({'error' : 'No matching notification was found'});
+    }
+    else{
+      res.json(result);
+
+      console.log(result);
+    }
+  })
+
+});
+// Old in
+// db.getDB().collection(collection).find({'_id': notificationID}, (err,result) =>{
+//   if(err)
+//     res.status(400).send({'error' : err})
+//   if (result === undefined) {
+//     res.status(400).send({'error' : 'No matching notification was found'});
+//   }
+//   else{
+//   //  res.json(getNotifications);
+//     res.status(200).send(result);
+//     console.log(result);
+//
+//   }
+// })
+//
+// });
+
 
 //Update
 app.put('/:id', (req,res) =>{
@@ -59,25 +100,6 @@ app.put('/:id', (req,res) =>{
 
 });
 
-
-//Old Update
-// app.put('/:id', (req,res) =>{
-//   const notificationID = req.params.id;
-//   const userInput = req.body;
-//   console.log(userInput);
-//
-//   db.getDB().collection(collection).findOneAndUpdate({_id: db.getPrimaryKey(notificationID)}, {$set : {notification : userInput.notification}}, {returnOriginal: false}, (err,result) =>{
-//     if(err)
-//       //TODO: send a user-friendly err
-//       console.log(err);
-//
-//     else
-//       res.json(result);
-//       console.log(req);
-//       console.log(res);
-//
-//   });
-// });
 
 //Create
 app.post('/', (req,res) => {
