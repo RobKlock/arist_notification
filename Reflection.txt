@@ -1,14 +1,9 @@
 I wanted to write this to let y'all know what I thought of this experience.
 First off, I'm grateful to have made it this far in the hiring process. Before working on this, I had only some moderate experience with web development (an intro class).
 I had no experience with Node, MongoDB, or Docker, but sometimes the best way to learn is to dive into a project. This was equal parts challenging, fun, and informative.
-I'm proud of what I was able to turn out, although I'm not happy with the trouble I had deploying it in Docker, but I tried my best and will keep looking into it until it
-gets resolved. If I were to do this project over again I think it would be wise to have a more firm schedule. It was tricky to navigate working on both this and school work
-at the same time. School is my priority right now, but I really wish I could have set aside more time to develop a deeper understanding of everything as I was working. I know
-that if I were to work for Arist this summer I would be able to dive into unfamiliar territory with more intensity given there wouldn't be a bunch of other important things
-needing attention.
+I'm proud of what I was able to turn out, although I'm not happy with the trouble I had deploying it in Docker, but I tried my best and will keep looking into it until it gets resolved. If I were to do this project over again I think it would be wise to have a more firm schedule. It was tricky to navigate working on both this and school work at the same time. School is my priority right now, but I really wish I could have set aside more time to develop a deeper understanding of everything as I was working. I know that if I were to work for Arist this summer I would be able to dive into unfamiliar territory with more intensity given there wouldn't be a bunch of other important things needing attention.
 
 But yeah, thank you again for this awesome opportunity. I really hope we get the chance to talk about this project and eventually work together.
 
 Rob
 
-I didnt comment on the Dockerfile as it seemed straightforward enough to follow. 
